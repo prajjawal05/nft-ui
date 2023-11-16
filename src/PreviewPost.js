@@ -2,32 +2,26 @@ import React, { useState } from 'react';
 import { Modal, Upload, Input, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-import './PostForm.css'
-const { TextArea } = Input;
-const { Text } = Typography;
+import './PostForm.css';
 
 
-const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
+const { Text, Paragraph, Title } = Typography;
 
-const UploadImage = () => {
+
+const ImagePreview = ({ image }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([]);
+    const [fileList, setFileList] = useState([{
+        url: image
+    }]);
 
     const handleCancel = () => setPreviewOpen(false);
 
     const handlePreview = async (file) => {
-        file.preview = await getBase64(file.originFileObj);
-        setPreviewImage(file.preview);
+        setPreviewImage(file.url);
         setPreviewOpen(true);
-        setPreviewTitle(file.name);
+        setPreviewTitle('Uploaded Image');
     };
 
     const handleChange = ({ fileList: newFileList }) =>
@@ -44,11 +38,12 @@ const UploadImage = () => {
                 action="/"
                 method="get"
                 maxCount={1}
+                showUploadList={{ showRemoveIcon: false }}
             >
-                {fileList.length == 1 ? 'Replace Image' : <div>
+                <div>
                     <PlusOutlined />
                     <div style={{ marginTop: 8 }}>Upload</div>
-                </div>}
+                </div>
             </Upload>
             <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                 <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -58,53 +53,50 @@ const UploadImage = () => {
 };
 
 
-const PostUser = () => {
+const PostUser = ({ user }) => {
     return (
         <div className='formUser'>
-            <Text>User</Text>
-            <Input
-                onChange={e => console.log("event: ", e.target.value)}
-                placeholder="Enter User Name"
-            />
+            <Title level={5}>User</Title>
+            <Text>{user}</Text>
         </div>
     )
 }
 
 
-const PostDescription = () => {
+const PostDescription = ({ desc }) => {
     return (
         <div className='formDescription'>
-            <Text>Description</Text>
-            <TextArea
-                showCount
-                maxLength={100}
-                onChange={e => console.log("event: ", e.target.value)}
-                placeholder="Enter Post in less than 100 characters"
-                style={{ resize: 'none' }}
-            />
+            <Title level={5}>Description</Title>
+            <Paragraph>{desc}</Paragraph>
         </div>
     )
 }
 
 
-const PostText = () => {
+const PostText = ({ post }) => {
+    const { user, desc } = post;
     return (
-        <div className='formText'>
-            <PostUser />
-            <PostDescription />
+        <div className='formText' style={{ maxWidth: '300px' }}>
+            <PostUser user={user} />
+            <PostDescription desc={desc} />
         </div>
     )
 }
 
 
-const CreatePost = () => {
+const PreviewPost = ({ id }) => {
+    const post = {
+        user: 'prajjawal05',
+        desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
+        image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+    }
     return (
         <div className='form'>
-            <UploadImage />
-            <PostText />
+            <ImagePreview image={post.image} />
+            <PostText post={post} />
         </div>
     )
 }
 
 
-export default CreatePost;
+export default PreviewPost;
