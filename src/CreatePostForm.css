@@ -1,0 +1,29 @@
+.uploaded {
+    .ant-upload.ant-upload-select {
+        display: none;
+    }
+}
+
+.form {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 50px;
+
+    .ant-upload-wrapper {
+        width: auto;
+    }
+}
+
+.formText {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 150px;
+
+    .ant-upload-wrapper {
+        width: auto;
+    }
+}
