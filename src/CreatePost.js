@@ -3,16 +3,25 @@ import { Button, Modal } from "antd";
 import CreatePostForm from "./CreatePostForm";
 
 
+const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+    });
+
 const CreatePost = ({ onCreate }) => {
     const [createOpen, setCreateOpen] = useState(false);
 
     const handleButton = () => setCreateOpen(true);
     const handleCancel = () => setCreateOpen(false);
 
-    const handleSubmit = data => {
+    const handleSubmit = async data => {
         // make an api call
         // image should be returned as url
-        onCreate({ ...data, image: data.image.thumbUrl });
+        const image = await getBase64(data.image.originFileObj);
+        onCreate({ ...data, image });
         handleCancel();
     }
 
