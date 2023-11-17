@@ -1,0 +1,24 @@
+.content {
+    .ant-space-item {
+        width: 90%;
+    }
+
+    .ant-upload-wrapper {
+        width: 100px;
+    }
+
+    .formDescription {
+        width: 600px;
+        text-align: left;
+    }
+
+    .ant-card-head-title {
+        text-align: left;
+    }
+}
+
+.uploaded {
+    .ant-upload.ant-upload-select {
+        display: none;
+    }
+}

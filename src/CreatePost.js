@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button, Modal } from "antd";
 import CreatePostForm from "./CreatePostForm";
-import PreviewPost from "./PreviewPost";
 
 
 const CreatePost = () => {
@@ -11,7 +10,7 @@ const CreatePost = () => {
     const handleCancel = () => setCreateOpen(false);
 
     return (
-        <>
+        <div style={{ minWidth: '300px' }}>
             <Button type="primary" onClick={handleButton}>Create Post</Button>
             <Modal
                 centered
@@ -21,9 +20,9 @@ const CreatePost = () => {
                 title={'Create Post'}
                 onCancel={handleCancel}
             >
-                <PreviewPost />
+                <CreatePostForm />
             </Modal>
-        </>
+        </div>
 
     );
 }
