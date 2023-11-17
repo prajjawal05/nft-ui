@@ -14,6 +14,7 @@ const CreatePost = () => {
             <Button type="primary" onClick={handleButton}>Create Post</Button>
             <Modal
                 centered
+                footer={null}
                 destroyOnClose
                 maskClosable={false}
                 open={createOpen}

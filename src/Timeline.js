@@ -35,8 +35,8 @@ const PostTitle = ({ user, time = 1637081841000 }) => {
     )
 }
 
-const Post = ({ post: { user, image, desc }, onPreview }) => (
-    <Card title={<PostTitle user={user} />} size="small">
+const Post = ({ key, post: { user, image, desc }, onPreview }) => (
+    <Card key={key} title={<PostTitle user={user} />} size="small">
         <div style={{ display: "flex", justifyContent: "space-around" }}>
             <Upload
                 listType="picture-card"
@@ -45,6 +45,7 @@ const Post = ({ post: { user, image, desc }, onPreview }) => (
                 onPreview={() => onPreview(image)}
                 action="/"
                 method="get"
+                key={key}
                 maxCount={1}
                 showUploadList={{ showRemoveIcon: false }}
             />

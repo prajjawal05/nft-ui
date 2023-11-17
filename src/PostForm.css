@@ -6,12 +6,17 @@
 
 .form {
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 50px;
+    margin-top: 20px;
 
     .ant-upload-wrapper {
-        width: auto;
+        width: 250px;
+
+        .ant-form-item-explain-error {
+            text-align: center;
+        }
     }
 }
 
@@ -22,8 +27,4 @@
     margin-top: 20px;
     margin-bottom: 20px;
     height: 150px;
-
-    .ant-upload-wrapper {
-        width: auto;
-    }
 }
