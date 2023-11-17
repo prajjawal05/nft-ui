@@ -57,19 +57,9 @@ const Post = ({ key, post: { user, image, desc }, onPreview }) => (
     </Card>
 )
 
-const Timeline = () => {
+const Timeline = ({ posts }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const posts = [
-        {
-            desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
-            user: 'prajjawal05',
-            image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        }, {
-            desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
-            user: 'prajjawal05',
-            image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        }]
 
     const handlePreview = image => {
         setPreviewImage(image);

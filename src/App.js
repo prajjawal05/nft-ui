@@ -3,6 +3,7 @@ import { Divider, ConfigProvider, Typography } from 'antd';
 import './App.css';
 import CreatePost from './CreatePost';
 import Timeline from './Timeline';
+import { useState } from 'react';
 
 const { Title } = Typography;
 
@@ -21,13 +22,27 @@ const CustomDivider = () => (
 );
 
 function App() {
+  const [posts, updatePosts] = useState([
+    {
+      desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
+      user: 'prajjawal05',
+      image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+    }, {
+      desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
+      user: 'prajjawal05',
+      image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+    }
+  ]);
+
+  const handleCreation = data => updatePosts(prevPost => [data, ...prevPost]);
+
   return (
     <div className="App">
       <Title level={4} style={{ minWidth: '300px' }}>Hello, Welcome</Title>
       <CustomDivider />
-      <Timeline />
+      <Timeline posts={posts} />
       <CustomDivider />
-      <CreatePost />
+      <CreatePost onCreate={handleCreation} />
     </div>
   );
 }

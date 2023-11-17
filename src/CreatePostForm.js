@@ -116,9 +116,11 @@ const PostText = () => {
 }
 
 
-const CreatePost = () => {
+const CreatePost = ({ onSubmit }) => {
     const [formData, updateFormData] = useState({});
-
+    const handleFinish = ({ user, desc, image }) => {
+        onSubmit({ user, desc, image: image.file })
+    }
     const handleValChange = data => {
         updateFormData(prevData => ({ ...prevData, ...data }));
     }
@@ -128,7 +130,7 @@ const CreatePost = () => {
             name="basic"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
-            onFinish={d => console.log(d)}
+            onFinish={handleFinish}
             onFinishFailed={() => console.log('some error in form')}
             onValuesChange={handleValChange}
             autoComplete="off"
