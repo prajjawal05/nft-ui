@@ -7,7 +7,11 @@ import './Timeline.css';
 
 const { Header, Footer, Content } = Layout;
 const { Text, Paragraph, Title } = Typography;
+
 const headerStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     textAlign: 'left',
     color: '#000000',
     height: 64,
@@ -35,7 +39,7 @@ const PostTitle = ({ user, time = 1637081841000 }) => {
     )
 }
 
-const Post = ({ key, post: { user, image, desc }, onPreview }) => (
+const Post = ({ key, post: { user, image, desc, similarExists, duplicateExists, id }, onPreview, updateFilter }) => (
     <Card key={key} title={<PostTitle user={user} />} size="small">
         <div style={{ display: "flex", justifyContent: "space-around" }}>
             <Upload
@@ -53,11 +57,15 @@ const Post = ({ key, post: { user, image, desc }, onPreview }) => (
                 <Title level={5} style={{ margin: "8px 0" }}>Description</Title>
                 <Paragraph>{desc}</Paragraph>
             </div>
+            <div className='duplicates'>
+                {!!similarExists && <Text type="warning" className="similar" onClick={() => updateFilter(['SIMILAR', id])}>See similar images</Text>}
+                {!!duplicateExists && <Text type="danger" className="dup" onClick={() => updateFilter(['DUPLICATE', id])}>See duplicate images</Text>}
+            </div>
         </div>
     </Card>
 )
 
-const Timeline = ({ posts }) => {
+const Timeline = ({ posts, filter, updateFilter }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
 
@@ -72,13 +80,14 @@ const Timeline = ({ posts }) => {
         <>
             <Space direction="vertical" style={{ width: '100%', display: 'flex' }} size={[0, 48]}>
                 <Layout style={{ height: "100vh" }}>
-                    <Header style={headerStyle}>
-                        <Title level={4}>All posts</Title>
+                    <Header className="header" style={headerStyle}>
+                        <Title level={4}>{!filter.length ? 'All posts' : filter[0] == 'SIMILAR' ? 'Similar Posts' : 'Duplicate Posts'}</Title>
+                        {!!filter.length && <Text type="secondary" className="all" onClick={() => updateFilter([])}>See All Posts</Text>}
                     </Header>
                     <Divider style={{ margin: '0' }} />
                     <Content style={bodyStyle}>
                         <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            {posts.map((post, id) => <Post key={id} post={post} onPreview={handlePreview} />)}
+                            {posts.map((post, id) => <Post key={id} post={post} onPreview={handlePreview} updateFilter={updateFilter} />)}
                         </Space>
                     </Content>
                 </Layout>

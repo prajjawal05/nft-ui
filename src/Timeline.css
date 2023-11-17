@@ -12,8 +12,41 @@
         text-align: left;
     }
 
+    .duplicates {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        text-align: right;
+      
+        .similar {
+            &:hover {
+                color: #000;
+                text-decoration: underline;
+            }
+        }
+
+        .dup {
+            &:hover {
+                color: #000;
+                text-decoration: underline;
+            }
+        }
+    }
+
     .ant-card-head-title {
         text-align: left;
+    }
+}
+
+.header {
+    .all {
+        cursor: pointer;
+        text-align: right;
+        &:hover {
+            color: #000;
+            text-decoration: underline;
+        }
     }
 }
 
