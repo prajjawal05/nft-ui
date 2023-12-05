@@ -22,50 +22,67 @@ const CustomDivider = () => (
 );
 
 function App() {
-  const [posts, updatePosts] = useState([
-    {
-      id: 'A',
-      desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
-      user: 'prajjawal05',
-      image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      similarExists: true,
-    }, {
-      id: 'B',
-      desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
-      user: 'prajjawal05',
-      image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      duplicateExists: true
-    }, {
-      id: 'C',
-      desc: 'Hello, hi what are you doing? Prajjawal here. Hope you are doing good.',
-      user: 'prajjawal05',
-      image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      similarExists: true,
-      duplicateExists: true
-    }
-  ]);
+  const [posts, updatePosts] = useState([]);
 
   const [filter, updateFilter] = useState([]);
   const [page, updatePage] = useState(1);
 
+  const getQueryParams = (page_num) => {
+    let queryParams = `page=${page_num}`;
+    if (filter[0] == 'DUPLICATE') {
+      queryParams += `&duplicate_to=${filter[1]}`;
+    } else if (filter[0] == 'SIMILAR') {
+      queryParams += `&similar_to=${filter[1]}`;
+    }
+
+    return queryParams;
+  }
+
+  const getData = queryParams => {
+    return new Promise((resolve, reject) => {
+      fetch(`http://localhost:8000/api/posts/?${queryParams}`)
+        .then(response => response.json())
+        .then(data => {
+          resolve(data.map(post => ({
+            id: post.id,
+            desc: post.desc,
+            user: post.user,
+            image: post.image,
+            time: post.time,
+            similarExists: !!post.similars,
+            duplicateExists: !!post.duplicates,
+          })))
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
   useEffect(() => {
-    fetch('http://localhost:8000/api/posts/')
-      .then(response => response.json())
-      .then(data => {
-        updatePosts(data.map(post => ({
-          id: post.id,
-          desc: post.desc,
-          user: post.user,
-          image: post.image,
-          time: post.time,
-          similarExists: !!post.similars,
-          duplicateExists: !!post.duplicates,
-        })))
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    const fetchAndUpdatePost = async () => {
+      const queryParams = getQueryParams(1);
+      const updatedData = await getData(queryParams);
+      updatePosts(updatedData)
+    }
+
+    fetchAndUpdatePost();
+    updatePage(1);
   }, [filter]);
+
+  useEffect(() => {
+    if (page == 1) {
+      return;
+    }
+
+    const fetchAndUpdate = async () => {
+      const queryParams = getQueryParams(page);
+      const olderPosts = await getData(queryParams);
+      updatePosts(posts => [...posts, ...olderPosts]);
+    }
+
+    fetchAndUpdate();
+  }, [page]);
 
   const handleCreation = data => updatePosts(prevPost => [data, ...prevPost]);
 
@@ -81,3 +98,13 @@ function App() {
 }
 
 export default App;
+
+
+/* Todo:
+1. Paging
+2. Rerendering
+3. Styling
+4. Loading
+  a. create button
+  b. timeline
+*/
