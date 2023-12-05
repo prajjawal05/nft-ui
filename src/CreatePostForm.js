@@ -116,7 +116,10 @@ const PostText = () => {
 
 const CreatePost = ({ onSubmit }) => {
     const [formData, updateFormData] = useState({});
+    const [loading, updateLoading] = useState(false);
+
     const handleFinish = ({ user, desc, image }) => {
+        updateLoading(true);
         const formData = new FormData();
         formData.append('image', image.file.originFileObj); // Assuming you have a variable 'yourImageFile' representing the image file
         formData.append('username', user);
@@ -139,6 +142,8 @@ const CreatePost = ({ onSubmit }) => {
         updateFormData(prevData => ({ ...prevData, ...data }));
     }
 
+    console.log(loading);
+
     return (
         <Form
             name="basic"
@@ -154,7 +159,7 @@ const CreatePost = ({ onSubmit }) => {
             <PostText />
             <Form.Item
             >
-                <Button type="primary" htmlType="submit">
+                <Button loading={loading} type="primary" htmlType="submit">
                     Submit
                 </Button>
             </Form.Item>
