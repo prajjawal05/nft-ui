@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Divider, ConfigProvider, Typography } from 'antd';
 
+import { sleep } from './utils';
 import './App.css';
 import CreatePost from './CreatePost';
 import Timeline from './Timeline';
-import { useEffect, useState } from 'react';
 
 const { Title } = Typography;
 const PAGE_SIZE = 10;
@@ -27,6 +28,7 @@ function App() {
   const [filter, updateFilter] = useState([]);
   const [page, updatePage] = useState(1);
   const [hasMore, updateHasMore] = useState(false);
+  const [loadingMore, updateLoadingMore] = useState(false);
 
   const getQueryParams = (page_num) => {
     let queryParams = `page=${page_num}`;
@@ -69,7 +71,7 @@ function App() {
     const fetchAndUpdatePost = async () => {
       const queryParams = getQueryParams(1);
       const { data: updatedData, hasMore } = await getData(queryParams);
-      updatePosts(updatedData)
+      updatePosts(updatedData);
       updateHasMore(hasMore);
     }
 
@@ -83,14 +85,21 @@ function App() {
     }
 
     const fetchAndUpdate = async () => {
+      await sleep(1000);
       const queryParams = getQueryParams(page);
       const { data: olderPosts, hasMore } = await getData(queryParams);
       updatePosts(posts => [...posts, ...olderPosts]);
       updateHasMore(hasMore);
+      updateLoadingMore(false);
     }
 
     fetchAndUpdate();
   }, [page]);
+
+  const loadMore = () => {
+    updatePage(p => p + 1);
+    updateLoadingMore(true);
+  }
 
   const handleCreation = data => updatePosts(prevPost => [data, ...prevPost]);
 
@@ -102,8 +111,9 @@ function App() {
         posts={posts}
         filter={filter}
         updateFilter={updateFilter}
-        loadMore={() => updatePage(p => p + 1)}
+        loadMore={loadMore}
         hasMore={hasMore}
+        loadingMore={loadingMore}
       />
       <CustomDivider />
       <CreatePost onCreate={handleCreation} />
@@ -116,7 +126,5 @@ export default App;
 
 /* Todo:
 1. Loading
-  a. create button
-  b. timeline
-  c. Load more
+  a. timeline
 */

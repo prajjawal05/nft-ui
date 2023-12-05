@@ -69,19 +69,8 @@ const Post = ({ post: { user, image, desc, similarExists, duplicateExists, id, t
 
 const MemoisedPost = memo(Post);
 
-const LoadMoreButton = ({ onClick }) => {
-    return (
-        <Button
-            type="primary"
-            style={{ marginTop: "20px" }}
-            onClick={onClick}
-        >
-            Load More
-        </Button>
-    )
-}
 
-const TimelineContent = ({ posts, updateFilter, onPreview, hasMore, loadMore }) => {
+const TimelineContent = ({ posts, updateFilter, onPreview, hasMore, loadMore, loadingMore }) => {
     return (
         <>
             <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
@@ -95,12 +84,21 @@ const TimelineContent = ({ posts, updateFilter, onPreview, hasMore, loadMore }) 
                     </div>
                 ))}
             </Space>
-            {hasMore && <LoadMoreButton onClick={loadMore} />}
+            {hasMore &&
+                <Button
+                    type="primary"
+                    style={{ marginTop: "20px" }}
+                    onClick={loadMore}
+                    loading={loadingMore}
+                >
+                    Load More
+                </Button>
+            }
         </>
     )
 }
 
-const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore }) => {
+const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore, loadingMore }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
 
@@ -127,6 +125,7 @@ const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore }) => {
                             updateFilter={updateFilter}
                             hasMore={hasMore}
                             loadMore={loadMore}
+                            loadingMore={loadingMore}
                         />
                     </Content>
                 </Layout>

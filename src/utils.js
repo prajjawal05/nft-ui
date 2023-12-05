@@ -33,4 +33,8 @@ function getColorForCharacter(character) {
     return `hsl(${hue}, 70%, 50%)`;
 }
 
-export { timeAgo, getColorForCharacter };
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export { timeAgo, getColorForCharacter, sleep };
