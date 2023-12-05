@@ -39,8 +39,8 @@ const PostTitle = ({ user, time = 1637081841000 }) => {
     )
 }
 
-const Post = ({ key, post: { user, image, desc, similarExists, duplicateExists, id }, onPreview, updateFilter }) => (
-    <Card key={key} title={<PostTitle user={user} />} size="small">
+const Post = ({ key, post: { user, image, desc, similarExists, duplicateExists, id, time }, onPreview, updateFilter }) => (
+    <Card key={key} title={<PostTitle user={user} time={time} />} size="small">
         <div style={{ display: "flex", justifyContent: "space-around" }}>
             <Upload
                 listType="picture-card"
@@ -87,7 +87,7 @@ const Timeline = ({ posts, filter, updateFilter }) => {
                     <Divider style={{ margin: '0' }} />
                     <Content style={bodyStyle}>
                         <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            {posts.map((post, id) => <Post key={id} post={post} onPreview={handlePreview} updateFilter={updateFilter} />)}
+                            {posts.map((post, id) => <div key={id}><Post post={post} onPreview={handlePreview} updateFilter={updateFilter} /></div>)}
                         </Space>
                     </Content>
                 </Layout>

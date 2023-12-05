@@ -46,9 +46,25 @@ function App() {
   ]);
 
   const [filter, updateFilter] = useState([]);
+  const [page, updatePage] = useState(1);
 
   useEffect(() => {
-    console.log(filter);
+    fetch('http://localhost:8000/api/posts/')
+      .then(response => response.json())
+      .then(data => {
+        updatePosts(data.map(post => ({
+          id: post.id,
+          desc: post.desc,
+          user: post.user,
+          image: post.image,
+          time: post.time,
+          similarExists: !!post.similars,
+          duplicateExists: !!post.duplicates,
+        })))
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }, [filter]);
 
   const handleCreation = data => updatePosts(prevPost => [data, ...prevPost]);

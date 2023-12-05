@@ -119,8 +119,24 @@ const PostText = () => {
 const CreatePost = ({ onSubmit }) => {
     const [formData, updateFormData] = useState({});
     const handleFinish = ({ user, desc, image }) => {
-        onSubmit({ user, desc, image: image.file })
+        const formData = new FormData();
+        formData.append('image', image.file.originFileObj); // Assuming you have a variable 'yourImageFile' representing the image file
+        formData.append('username', user);
+        formData.append('description', desc);
+        fetch('http://localhost:8000/api/upload/', {
+            method: 'POST',
+            body: formData,
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        }).then(data => {
+            const currTime = Math.floor(new Date().getTime() / 1000);
+            onSubmit({ id: data.body.postId, user, desc, image: image.file, time: currTime });
+        })
     }
+
     const handleValChange = data => {
         updateFormData(prevData => ({ ...prevData, ...data }));
     }

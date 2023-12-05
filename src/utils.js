@@ -1,6 +1,6 @@
 function timeAgo(timestamp) {
     const now = new Date();
-    const seconds = Math.floor((now - timestamp) / 1000);
+    const seconds = Math.max(1, Math.floor((now - timestamp * 1000) / 1000));
 
     const intervals = {
         year: 31536000,
@@ -8,12 +8,15 @@ function timeAgo(timestamp) {
         day: 86400,
         hour: 3600,
         minute: 60,
+        second: 1,
     };
 
     for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-        const interval = Math.floor(seconds / secondsInUnit);
-
+        let interval = Math.floor(seconds / secondsInUnit);
         if (interval >= 1) {
+            if (unit == 'second') {
+                interval = 'Few';
+            }
             return `${interval} ${unit}${interval === 1 ? '' : 's'} ago`;
         }
     }
