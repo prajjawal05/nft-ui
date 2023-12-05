@@ -6,7 +6,7 @@ import Timeline from './Timeline';
 import { useEffect, useState } from 'react';
 
 const { Title } = Typography;
-
+const PAGE_SIZE = 10;
 const DIVIDER_THEME = {
   token: {
     lineWidth: 1.5,
@@ -26,6 +26,7 @@ function App() {
 
   const [filter, updateFilter] = useState([]);
   const [page, updatePage] = useState(1);
+  const [hasMore, updateHasMore] = useState(false);
 
   const getQueryParams = (page_num) => {
     let queryParams = `page=${page_num}`;
@@ -42,8 +43,8 @@ function App() {
     return new Promise((resolve, reject) => {
       fetch(`http://localhost:8000/api/posts/?${queryParams}`)
         .then(response => response.json())
-        .then(data => {
-          resolve(data.map(post => ({
+        .then(response => {
+          const data = response.map(post => ({
             id: post.id,
             desc: post.desc,
             user: post.user,
@@ -51,7 +52,12 @@ function App() {
             time: post.time,
             similarExists: !!post.similars,
             duplicateExists: !!post.duplicates,
-          })))
+          }));
+          let hasMore = true;
+          if (data.length < PAGE_SIZE) {
+            hasMore = false;
+          }
+          resolve({ data, hasMore });
         })
         .catch(error => {
           reject(error);
@@ -62,8 +68,9 @@ function App() {
   useEffect(() => {
     const fetchAndUpdatePost = async () => {
       const queryParams = getQueryParams(1);
-      const updatedData = await getData(queryParams);
+      const { data: updatedData, hasMore } = await getData(queryParams);
       updatePosts(updatedData)
+      updateHasMore(hasMore);
     }
 
     fetchAndUpdatePost();
@@ -77,8 +84,9 @@ function App() {
 
     const fetchAndUpdate = async () => {
       const queryParams = getQueryParams(page);
-      const olderPosts = await getData(queryParams);
+      const { data: olderPosts, hasMore } = await getData(queryParams);
       updatePosts(posts => [...posts, ...olderPosts]);
+      updateHasMore(hasMore);
     }
 
     fetchAndUpdate();
@@ -90,7 +98,13 @@ function App() {
     <div className="App">
       <Title level={4} style={{ minWidth: '300px' }}>Hello, Welcome</Title>
       <CustomDivider />
-      <Timeline posts={posts} filter={filter} updateFilter={updateFilter} />
+      <Timeline
+        posts={posts}
+        filter={filter}
+        updateFilter={updateFilter}
+        loadMore={() => updatePage(p => p + 1)}
+        hasMore={hasMore}
+      />
       <CustomDivider />
       <CreatePost onCreate={handleCreation} />
     </div>
@@ -101,10 +115,9 @@ export default App;
 
 
 /* Todo:
-1. Paging
-2. Rerendering
-3. Styling
-4. Loading
+1. Rerendering
+2. Styling
+3. Loading
   a. create button
   b. timeline
 */

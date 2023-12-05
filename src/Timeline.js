@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Card, Layout, Space, Typography, Divider, Upload, Modal, Avatar } from "antd";
+import { useState, memo } from "react";
+import { Card, Layout, Space, Typography, Divider, Upload, Modal, Avatar, Button } from "antd";
 import { UserOutlined } from '@ant-design/icons';
 
 import { getColorForCharacter, timeAgo } from "./utils";
@@ -39,17 +39,17 @@ const PostTitle = ({ user, time = 1637081841000 }) => {
     )
 }
 
-const Post = ({ key, post: { user, image, desc, similarExists, duplicateExists, id, time }, onPreview, updateFilter }) => (
-    <Card key={key} title={<PostTitle user={user} time={time} />} size="small">
+const Post = ({ post: { user, image, desc, similarExists, duplicateExists, id, time }, onPreview, updateFilter }) => (
+    <Card key={id} title={<PostTitle user={user} time={time} />} size="small">
         <div style={{ display: "flex", justifyContent: "space-around" }}>
             <Upload
+                key={id}
                 listType="picture-card"
                 fileList={[{ url: image }]}
                 className={"uploaded"}
                 onPreview={() => onPreview(image)}
                 action="/"
                 method="get"
-                key={key}
                 maxCount={1}
                 showUploadList={{ showRemoveIcon: false }}
             />
@@ -65,7 +65,21 @@ const Post = ({ key, post: { user, image, desc, similarExists, duplicateExists, 
     </Card>
 )
 
-const Timeline = ({ posts, filter, updateFilter }) => {
+const MemoisedPost = memo(Post);
+
+const LoadMoreButton = ({ onClick }) => {
+    return (
+        <Button
+            type="primary"
+            style={{ marginTop: "20px" }}
+            onClick={onClick}
+        >
+            Load More
+        </Button>
+    )
+}
+
+const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
 
@@ -87,8 +101,9 @@ const Timeline = ({ posts, filter, updateFilter }) => {
                     <Divider style={{ margin: '0' }} />
                     <Content style={bodyStyle}>
                         <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            {posts.map((post, id) => <div key={id}><Post post={post} onPreview={handlePreview} updateFilter={updateFilter} /></div>)}
+                            {posts.map((post, id) => <div key={id}><MemoisedPost post={post} onPreview={handlePreview} updateFilter={updateFilter} /></div>)}
                         </Space>
+                        {hasMore && <LoadMoreButton onClick={loadMore} />}
                     </Content>
                 </Layout>
             </Space>
