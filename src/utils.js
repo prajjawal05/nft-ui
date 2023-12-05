@@ -14,7 +14,7 @@ function timeAgo(timestamp) {
     for (const [unit, secondsInUnit] of Object.entries(intervals)) {
         let interval = Math.floor(seconds / secondsInUnit);
         if (interval >= 1) {
-            if (unit == 'second') {
+            if (unit === 'second') {
                 interval = 'Few';
             }
             return `${interval} ${unit}${interval === 1 ? '' : 's'} ago`;

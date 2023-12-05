@@ -30,9 +30,9 @@ function App() {
 
   const getQueryParams = (page_num) => {
     let queryParams = `page=${page_num}`;
-    if (filter[0] == 'DUPLICATE') {
+    if (filter[0] === 'DUPLICATE') {
       queryParams += `&duplicate_to=${filter[1]}`;
-    } else if (filter[0] == 'SIMILAR') {
+    } else if (filter[0] === 'SIMILAR') {
       queryParams += `&similar_to=${filter[1]}`;
     }
 
@@ -78,7 +78,7 @@ function App() {
   }, [filter]);
 
   useEffect(() => {
-    if (page == 1) {
+    if (page === 1) {
       return;
     }
 
@@ -116,8 +116,7 @@ export default App;
 
 /* Todo:
 1. Rerendering
-2. Styling
-3. Loading
+2. Loading
   a. create button
   b. timeline
 */

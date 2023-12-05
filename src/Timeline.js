@@ -5,7 +5,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { getColorForCharacter, timeAgo } from "./utils";
 import './Timeline.css';
 
-const { Header, Footer, Content } = Layout;
+const { Header, Content } = Layout;
 const { Text, Paragraph, Title } = Typography;
 
 const headerStyle = {
@@ -39,32 +39,33 @@ const PostTitle = ({ user, time = 1637081841000 }) => {
     )
 }
 
-const Post = ({ post: { user, image, desc, similarExists, duplicateExists, id, time }, onPreview, updateFilter }) => (
-    <Card key={id} title={<PostTitle user={user} time={time} />} size="small">
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-            <Upload
-                key={id}
-                listType="picture-card"
-                fileList={[{ url: image }]}
-                className={"uploaded"}
-                onPreview={() => onPreview(image)}
-                action="/"
-                method="get"
-                maxCount={1}
-                showUploadList={{ showRemoveIcon: false }}
-            />
-            <div className='formDescription'>
-                <Title level={5} style={{ margin: "8px 0" }}>Description</Title>
-                <Paragraph>{desc}</Paragraph>
+const Post = ({ post: { user, image, desc, similarExists, duplicateExists, id, time }, onPreview, updateFilter }) => {
+    return (
+        <Card key={id} title={<PostTitle user={user} time={time} />} size="small">
+            <div style={{ display: "flex", justifyContent: "left" }}>
+                <Upload
+                    key={id}
+                    listType="picture-card"
+                    fileList={[{ url: image }]}
+                    className={"uploaded"}
+                    onPreview={() => onPreview(image)}
+                    action="/"
+                    method="get"
+                    maxCount={1}
+                    showUploadList={{ showRemoveIcon: false }}
+                />
+                <div className='formDescription'>
+                    <Title level={5} style={{ margin: "8px 0" }}>Description</Title>
+                    <Paragraph>{desc}</Paragraph>
+                </div>
+                <div className='duplicates'>
+                    {!!similarExists && <Text type="warning" className="similar" onClick={() => updateFilter(['SIMILAR', id])}>See similar images</Text>}
+                    {!!duplicateExists && <Text type="danger" className="dup" onClick={() => updateFilter(['DUPLICATE', id])}>See duplicate images</Text>}
+                </div>
             </div>
-            <div className='duplicates'>
-                {!!similarExists && <Text type="warning" className="similar" onClick={() => updateFilter(['SIMILAR', id])}>See similar images</Text>}
-                {!!duplicateExists && <Text type="danger" className="dup" onClick={() => updateFilter(['DUPLICATE', id])}>See duplicate images</Text>}
-            </div>
-        </div>
-    </Card>
-)
-
+        </Card>
+    )
+}
 const MemoisedPost = memo(Post);
 
 const LoadMoreButton = ({ onClick }) => {
@@ -95,7 +96,7 @@ const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore }) => {
             <Space direction="vertical" style={{ width: '100%', display: 'flex' }} size={[0, 48]}>
                 <Layout style={{ height: "100vh" }}>
                     <Header className="header" style={headerStyle}>
-                        <Title level={4}>{!filter.length ? 'All posts' : filter[0] == 'SIMILAR' ? 'Similar Posts' : 'Duplicate Posts'}</Title>
+                        <Title level={4}>{!filter.length ? 'All posts' : filter[0] === 'SIMILAR' ? 'Similar Posts' : 'Duplicate Posts'}</Title>
                         {!!filter.length && <Text type="secondary" className="all" onClick={() => updateFilter([])}>See All Posts</Text>}
                     </Header>
                     <Divider style={{ margin: '0' }} />

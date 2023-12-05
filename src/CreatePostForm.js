@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, Upload, Input, Typography, Form, Button } from 'antd';
+import { Modal, Upload, Input, Form, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import './PostForm.css'
 const { TextArea } = Input;
-const { Text } = Typography;
-
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -50,7 +48,7 @@ const UploadImage = ({ formData }) => {
                 <Upload
                     listType="picture-card"
                     fileList={fileList}
-                    className={fileList.length == 1 && "uploaded"}
+                    className={fileList.length === 1 && "uploaded"}
                     onPreview={handlePreview}
                     action="/"
                     method="get"

@@ -5,10 +5,12 @@
 
     .ant-upload-wrapper {
         width: 100px;
+        margin-left: 20px;
     }
 
     .formDescription {
-        width: 600px;
+        width: 70%;
+        margin-left: 30px;
         text-align: left;
     }
 
