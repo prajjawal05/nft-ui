@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Divider, ConfigProvider, Typography } from 'antd';
 
 import { sleep } from './utils';
@@ -29,6 +29,7 @@ function App() {
   const [page, updatePage] = useState(1);
   const [hasMore, updateHasMore] = useState(false);
   const [loadingMore, updateLoadingMore] = useState(false);
+  const [dataLoading, updateDataLoading] = useState(true);
 
   const getQueryParams = (page_num) => {
     let queryParams = `page=${page_num}`;
@@ -69,10 +70,12 @@ function App() {
 
   useEffect(() => {
     const fetchAndUpdatePost = async () => {
+      await sleep(300);
       const queryParams = getQueryParams(1);
       const { data: updatedData, hasMore } = await getData(queryParams);
       updatePosts(updatedData);
       updateHasMore(hasMore);
+      updateDataLoading(false);
     }
 
     fetchAndUpdatePost();
@@ -85,7 +88,7 @@ function App() {
     }
 
     const fetchAndUpdate = async () => {
-      await sleep(1000);
+      await sleep(300);
       const queryParams = getQueryParams(page);
       const { data: olderPosts, hasMore } = await getData(queryParams);
       updatePosts(posts => [...posts, ...olderPosts]);
@@ -95,6 +98,11 @@ function App() {
 
     fetchAndUpdate();
   }, [page]);
+
+  const onFilterUpdate = useCallback(updatedFilter => {
+    updateFilter(updatedFilter);
+    updateDataLoading(true);
+  }, []);
 
   const loadMore = () => {
     updatePage(p => p + 1);
@@ -110,10 +118,11 @@ function App() {
       <Timeline
         posts={posts}
         filter={filter}
-        updateFilter={updateFilter}
         loadMore={loadMore}
         hasMore={hasMore}
         loadingMore={loadingMore}
+        updateFilter={onFilterUpdate}
+        dataLoading={dataLoading}
       />
       <CustomDivider />
       <CreatePost onCreate={handleCreation} />
@@ -122,9 +131,3 @@ function App() {
 }
 
 export default App;
-
-
-/* Todo:
-1. Loading
-  a. timeline
-*/

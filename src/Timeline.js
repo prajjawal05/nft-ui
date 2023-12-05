@@ -1,5 +1,5 @@
 import { useState, memo, useCallback } from "react";
-import { Card, Layout, Space, Typography, Divider, Upload, Modal, Avatar, Button } from "antd";
+import { Card, Layout, Space, Typography, Divider, Upload, Modal, Avatar, Button, Spin } from "antd";
 import { UserOutlined } from '@ant-design/icons';
 
 import { getColorForCharacter, timeAgo } from "./utils";
@@ -69,36 +69,44 @@ const Post = ({ post: { user, image, desc, similarExists, duplicateExists, id, t
 
 const MemoisedPost = memo(Post);
 
+const Loader = () => (
+    <Spin tip="Loading" size="large" style={{ height: "100vh", top: "25vh" }}>
+        <div className="content" />
+    </Spin>
+)
 
-const TimelineContent = ({ posts, updateFilter, onPreview, hasMore, loadMore, loadingMore }) => {
+const TimelineContent = ({ posts, updateFilter, onPreview, hasMore, loadMore, loadingMore, dataLoading }) => {
+    console.log(dataLoading);
     return (
-        <>
-            <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                {posts.map((post, id) => (
-                    <div key={id}>
-                        <MemoisedPost
-                            post={post}
-                            onPreview={onPreview}
-                            updateFilter={updateFilter}
-                        />
-                    </div>
-                ))}
-            </Space>
-            {hasMore &&
-                <Button
-                    type="primary"
-                    style={{ marginTop: "20px" }}
-                    onClick={loadMore}
-                    loading={loadingMore}
-                >
-                    Load More
-                </Button>
-            }
-        </>
+        dataLoading ? <Loader /> : (
+            <>
+                <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
+                    {posts.map((post, id) => (
+                        <div key={id}>
+                            <MemoisedPost
+                                post={post}
+                                onPreview={onPreview}
+                                updateFilter={updateFilter}
+                            />
+                        </div>
+                    ))}
+                </Space>
+                {hasMore &&
+                    <Button
+                        type="primary"
+                        style={{ marginTop: "20px" }}
+                        onClick={loadMore}
+                        loading={loadingMore}
+                    >
+                        Load More
+                    </Button>
+                }
+            </>
+        )
     )
 }
 
-const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore, loadingMore }) => {
+const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore, loadingMore, dataLoading }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
 
@@ -126,6 +134,7 @@ const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore, loadingMore 
                             hasMore={hasMore}
                             loadMore={loadMore}
                             loadingMore={loadingMore}
+                            dataLoading={dataLoading}
                         />
                     </Content>
                 </Layout>
