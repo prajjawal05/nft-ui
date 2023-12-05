@@ -115,8 +115,8 @@ export default App;
 
 
 /* Todo:
-1. Rerendering
-2. Loading
+1. Loading
   a. create button
   b. timeline
+  c. Load more
 */

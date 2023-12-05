@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, useCallback } from "react";
 import { Card, Layout, Space, Typography, Divider, Upload, Modal, Avatar, Button } from "antd";
 import { UserOutlined } from '@ant-design/icons';
 
@@ -66,6 +66,7 @@ const Post = ({ post: { user, image, desc, similarExists, duplicateExists, id, t
         </Card>
     )
 }
+
 const MemoisedPost = memo(Post);
 
 const LoadMoreButton = ({ onClick }) => {
@@ -80,14 +81,33 @@ const LoadMoreButton = ({ onClick }) => {
     )
 }
 
+const TimelineContent = ({ posts, updateFilter, onPreview, hasMore, loadMore }) => {
+    return (
+        <>
+            <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
+                {posts.map((post, id) => (
+                    <div key={id}>
+                        <MemoisedPost
+                            post={post}
+                            onPreview={onPreview}
+                            updateFilter={updateFilter}
+                        />
+                    </div>
+                ))}
+            </Space>
+            {hasMore && <LoadMoreButton onClick={loadMore} />}
+        </>
+    )
+}
+
 const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
 
-    const handlePreview = image => {
+    const handlePreview = useCallback(image => {
         setPreviewImage(image);
         setPreviewOpen(true);
-    }
+    }, []);
 
     const handleCancel = () => setPreviewOpen(false);
 
@@ -101,10 +121,13 @@ const Timeline = ({ posts, filter, updateFilter, loadMore, hasMore }) => {
                     </Header>
                     <Divider style={{ margin: '0' }} />
                     <Content style={bodyStyle}>
-                        <Space className="content" direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            {posts.map((post, id) => <div key={id}><MemoisedPost post={post} onPreview={handlePreview} updateFilter={updateFilter} /></div>)}
-                        </Space>
-                        {hasMore && <LoadMoreButton onClick={loadMore} />}
+                        <TimelineContent
+                            posts={posts}
+                            onPreview={handlePreview}
+                            updateFilter={updateFilter}
+                            hasMore={hasMore}
+                            loadMore={loadMore}
+                        />
                     </Content>
                 </Layout>
             </Space>
