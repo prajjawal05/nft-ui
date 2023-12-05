@@ -91,7 +91,7 @@ const PostDescription = () => {
             <Form.Item
                 label="Description"
                 name="desc"
-                rules={[{ required: true, message: 'Please input your username!' }]}
+                rules={[{ required: true, message: 'Please input your description!' }]}
             >
                 <TextArea
                     maxLength={100}
